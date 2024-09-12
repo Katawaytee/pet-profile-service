@@ -1,10 +1,9 @@
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./configs/db");
 
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./configs/db');
-
-dotenv.config({ path: './configs/.env' });
+dotenv.config({ path: "./configs/.env" });
 
 connectDB();
 
@@ -13,6 +12,9 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+const pets = require("./routes/pets");
+app.use("/api/v1/pets", pets);
+
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
