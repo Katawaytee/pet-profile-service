@@ -6,6 +6,6 @@ const router = express.Router();
 router.route("/").post(createPet).get(getPets);
 router.route("/:id").get(getPet);
 
-router.route("/user/:userId").get(getPets);
+router.route("/user/:userId/pets").get(getPets);
 
 module.exports = router;
