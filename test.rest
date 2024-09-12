@@ -1,0 +1,21 @@
+POST http://localhost:3000/pets
+Content-Type: application/json
+
+{
+    "userId" : "nine",
+    "petName": "Boomer8",
+    "species":"Cat",
+    "gender": "Female",
+    "age": 3,
+    "image": "image"
+}
+
+###
+GET http://localhost:3000/pets
+
+###
+GET http://localhost:3000/pets/3
+
+###
+# GET http://localhost:3000/user/nine/pets
+GET http://localhost:3000/pets/user/nine/pets

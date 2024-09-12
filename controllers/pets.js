@@ -52,7 +52,7 @@ exports.createPet = async (req, res) => {
     const pet = new Pet({
       petId: pid,
       userId: req.body.userId,
-      petName: req.body.name,
+      petName: req.body.petName,
       species: req.body.species,
       gender: req.body.gender,
       age: req.body.age,

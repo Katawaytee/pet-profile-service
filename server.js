@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 const pets = require("./routes/pets");
-app.use("/api/v1/pets", pets);
+app.use("/pets", pets);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
