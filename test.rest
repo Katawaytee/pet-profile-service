@@ -5,17 +5,21 @@ Content-Type: application/json
     "userId" : "nine",
     "petName": "Boomer8",
     "species":"Cat",
-    "gender": "Female",
+    "gender": "female",
     "age": 3,
-    "image": "image"
+    "image": ["image1","image2"],
+    "behaviorDescription": "lovely dog",
+    "vaccinatedComment": "complete",
+    "video":["https://youtu.be/f1atbUNVkis?si=tqOTikubsnSG9rGv" , "https://youtu.be/Ibe7-_ORvko?si=nQp5lij18EASUae8"]
+
 }
 
 ###
 GET http://localhost:3000/pets
 
 ###
-GET http://localhost:3000/pets/3
+GET http://localhost:3000/pets/66e31db26a839043a36cbfce
 
 ###
 # GET http://localhost:3000/user/nine/pets
-GET http://localhost:3000/pets/user/nine/pets
+GET http://localhost:3000/user/nine/pets
