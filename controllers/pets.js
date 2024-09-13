@@ -3,14 +3,19 @@ const Pet = require("../models/Pet");
 exports.getPets = async (req, res) => {
   let uid = req.params.userId;
   let query;
-
+  // let viaUser = false;
   if (uid) {
-    query = Pet.find({ userId: uid });
+    query = Pet.find({ userId: uid }).populate({
+      path: "pet",
+      select: "petName species gender age behaviorDescription image",
+    });
+    // viaUser = true;
   } else {
     query = Pet.find();
   }
   try {
     const pets = await query;
+
     res.status(200).json({
       count: pets.length,
       data: pets,
@@ -24,7 +29,7 @@ exports.getPets = async (req, res) => {
 exports.getPet = async (req, res) => {
   try {
     let pid = req.params.id;
-    const pet = await Pet.findOne({ petId: pid });
+    const pet = await Pet.findById(pid);
 
     if (!pet) {
       return res.status(404).json({
@@ -42,21 +47,31 @@ exports.getPet = async (req, res) => {
     return res.status(500).json({ success: false, massage: "Cannot find Pet" });
   }
 };
+// const validateGender = (gender) => {
+//   if (gen === "male" || gen === "female") {
+//     return true;
+//   }
+//   return false;
+// };
 
 exports.createPet = async (req, res) => {
   try {
     // Get the count of pets in the database using the PET model
     const petCount = await Pet.countDocuments();
+
     // Assign petID as petCount + 1
-    let pid = petCount + 1;
+    // let pid = petCount + 1;
     const pet = new Pet({
-      petId: pid,
+      // petId: pid,
       userId: req.body.userId,
       petName: req.body.petName,
       species: req.body.species,
       gender: req.body.gender,
       age: req.body.age,
       image: req.body.image,
+      behaviorDescription: req.body.behaviorDescription,
+      vaccinatedComment: req.body.vaccinatedComment,
+      video: req.body.video,
     });
 
     const newPet = await pet.save();

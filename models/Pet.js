@@ -1,19 +1,23 @@
-const mongoose = require("mongoose");
-
-/* {
-        petId: 'ghi012',
-        petName: 'Luna',
-        gender: 'Female',
-        species: 'Bulldog',
-        age: 4,
-        image: 'link7'
+/*{
+        petId: 'abc123',
+        userID: 'user001',
+        petName: 'Buddy',
+        gender: 'Male',
+        species: 'Golden Retriever',
+        age: 5,
+        image: ['link1', 'link2'],
+        behaviorDescription: 'friendly and energetic',
+        vaccinatedComment: 'complete',
+        video: ['videoLink1', 'videoLink2']
     }, */
 
+const mongoose = require("mongoose");
+
 const petSchema = new mongoose.Schema({
-  petId: {
-    type: String,
-    required: true,
-  },
+  // petId: {
+  //   type: String,
+  //   required: true,
+  // },
   userId: {
     type: String,
     required: true,
@@ -28,6 +32,7 @@ const petSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
+    enum: ["male", "female"],
     require: true,
   },
   age: {
@@ -35,7 +40,18 @@ const petSchema = new mongoose.Schema({
     require: true,
   },
   image: {
+    type: [String],
+  },
+  behaviorDescription: {
     type: String,
+  },
+  vaccinatedComment: {
+    type: String,
+    enum: ["complete", "pending", "never"],
+    required: true,
+  },
+  video: {
+    type: [String],
   },
 });
 
