@@ -2,20 +2,22 @@ POST http://localhost:3000/pets
 Content-Type: application/json
 
 {
-    "userId" : "nine",
-    "petName": "Boomer8",
-    "species":"Cat",
-    "gender": "female",
-    "age": 3,
-    "image": ["image1","image2"],
-    "behaviorDescription": "lovely dog",
-    "vaccinatedComment": "complete",
-    "video":["https://youtu.be/f1atbUNVkis?si=tqOTikubsnSG9rGv" , "https://youtu.be/Ibe7-_ORvko?si=nQp5lij18EASUae8"]
-
+    "userId": "user003",
+    "petName": "Max",
+    "gender": "male",
+    "species": "Beagle",
+    "age": 7,
+    "image": ["link5", "link6"],
+    "behaviorDescription": "calm and intelligent",
+    "vaccinatedComment": "pending",
+    "video": ["videoLink5", "videoLink6"]
 }
 
 ###
 GET http://localhost:3000/pets
+
+###
+GET http://localhost:3000/pets/random
 
 ###
 GET http://localhost:3000/pets/66e31db26a839043a36cbfce
