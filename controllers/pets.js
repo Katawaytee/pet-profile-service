@@ -83,23 +83,30 @@ exports.createPet = async (req, res) => {
 
 exports.updatePet = async (req, res) => {
   try {
+    
     let pid = req.params.id;
-    const pet = await Pet.findById(pid);
 
-    if (!pet) {
+    const updatedPet = await Pet.findByIdAndUpdate(pid, req.body, {
+      new: true
+    });
+
+    if (!updatedPet) {
       return res.status(404).json({
         success: false,
         message: `No Pets with the id of ${pid}`,
       });
     }
 
-    const updatedPet = await Pet.findByIdAndUpdate(pid, req.body, {
-      new: true,
-      runValidators: true,
+    res.status(200).json({
+      success: true,
+      data: updatedPet
     });
-    res.json(updatedPet);
+
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 

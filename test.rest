@@ -25,3 +25,11 @@ GET http://localhost:3000/pets/66e31db26a839043a36cbfce
 ###
 # GET http://localhost:3000/user/nine/pets
 GET http://localhost:3000/user/nine/pets
+
+###
+PUT http://localhost:3000/pets/66e465ea29dcc672c759090c
+Content-Type: application/json
+
+{
+    "behaviorDescription": "playful"
+}
