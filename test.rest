@@ -33,3 +33,6 @@ Content-Type: application/json
 {
     "vaccinatedComment": "not vaccinated"
 }
+
+###
+DELETE http://localhost:3000/pets/66e456548af6d1654cb16dc1

@@ -84,7 +84,7 @@ exports.createPet = async (req, res) => {
 
 exports.updatePet = async (req, res) => {
   try {
-    
+
     let pid = req.params.id;
 
     if (!pid) {
@@ -127,23 +127,43 @@ exports.updatePet = async (req, res) => {
 
 exports.deletePet = async (req, res) => {
   try {
+    
     let pid = req.params.id;
-    const pet = await Pet.findById(pid);
 
-    if (!pet) {
-      return res.status(404).json({
+    if (!pid) {
+      return res.status(400).json({
         success: false,
-        message: `No Pet with the id of ${pid}`,
+        message: "petId not specified",
       });
     }
-    await pet.deleteOne();
-    res.status(200).json({
+
+    if (!Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({
+        success: false,
+        message: "petId is invalid",
+      });
+    }
+
+    const deletedPet = await Pet.findByIdAndDelete(pid);
+
+    if (!deletedPet) {
+      return res.status(404).json({
+        success: false,
+        message: `No Pets with the id of ${pid}`,
+      });
+    }
+
+    return res.status(200).json({
       success: true,
       data: {},
       message: `Pet ${pid} is now deleted.`,
     });
+
   } catch {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 
