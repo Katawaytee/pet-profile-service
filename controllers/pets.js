@@ -1,4 +1,5 @@
 const Pet = require("../models/Pet");
+const { Types } = require('mongoose');
 
 exports.getPets = async (req, res) => {
   let uid = req.params.userId;
@@ -86,6 +87,20 @@ exports.updatePet = async (req, res) => {
     
     let pid = req.params.id;
 
+    if (!pid) {
+      return res.status(400).json({
+        success: false,
+        message: "petId not specified",
+      });
+    }
+
+    if (!Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({
+        success: false,
+        message: "petId is invalid",
+      });
+    }
+
     const updatedPet = await Pet.findByIdAndUpdate(pid, req.body, {
       new: true
     });
@@ -97,7 +112,7 @@ exports.updatePet = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: updatedPet
     });
