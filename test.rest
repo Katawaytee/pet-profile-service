@@ -2,7 +2,7 @@ POST http://localhost:3000/pets
 Content-Type: application/json
 
 {
-    "userId": "user008",
+    "userId": "user010",
     "petName": "Max6",
     "gender": "male",
     "species": "Beagle",
@@ -20,13 +20,13 @@ GET http://localhost:3000/pets
 GET http://localhost:3000/pets/random
 
 ###
-GET http://localhost:3000/pets/66e94a571cd10b7109615cd7
+GET http://localhost:3000/pets/66e954669734ca16b7af00b6
 
 ###
 GET http://localhost:3000/user/user008/pets
 
 ###
-PUT http://localhost:3000/pets/66e94a571cd10b7109615cd7
+PUT http://localhost:3000/pets/66e954669734ca16b7af00b6
 Content-Type: application/json
 
 {
@@ -34,4 +34,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/pets/66e94a571cd10b7109615cd7
+DELETE http://localhost:3000/pets/66e954669734ca16b7af00b6
