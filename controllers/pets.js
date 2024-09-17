@@ -1,18 +1,20 @@
 const Pet = require("../models/Pet");
-const { Types } = require('mongoose');
+const { Types } = require("mongoose");
 
 exports.getPets = async (req, res) => {
   let uid = req.params.userId;
   let query;
   // let viaUser = false;
+  console.log(uid);
   if (uid) {
-    query = Pet.find({ userId: uid }).populate({
-      path: "pet",
-      select: "petName species gender age behaviorDescription image",
-    });
+    console.log(req.params.userId);
+    query = Pet.find({ userId: uid }).select(
+      "petName species gender age behaviorDescription image"
+    );
     // viaUser = true;
   } else {
     query = Pet.find();
+    console.log("no User");
   }
   try {
     const pets = await query;
@@ -84,7 +86,6 @@ exports.createPet = async (req, res) => {
 
 exports.updatePet = async (req, res) => {
   try {
-
     let pid = req.params.id;
 
     if (!pid) {
@@ -102,7 +103,7 @@ exports.updatePet = async (req, res) => {
     }
 
     const updatedPet = await Pet.findByIdAndUpdate(pid, req.body, {
-      new: true
+      new: true,
     });
 
     if (!updatedPet) {
@@ -114,20 +115,18 @@ exports.updatePet = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      data: updatedPet
+      data: updatedPet,
     });
-
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
 
 exports.deletePet = async (req, res) => {
   try {
-    
     let pid = req.params.id;
 
     if (!pid) {
@@ -158,19 +157,16 @@ exports.deletePet = async (req, res) => {
       data: {},
       message: `Pet ${pid} is now deleted.`,
     });
-
   } catch {
     res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 };
 
 exports.getRandomPets = async (req, res) => {
-
   try {
-
     const randomPets = await Pet.aggregate([
       { $sample: { size: 3 } },
       {
@@ -181,21 +177,19 @@ exports.getRandomPets = async (req, res) => {
           species: 1,
           gender: 1,
           age: 1,
-          image: { $arrayElemAt: ["$image", 0] }
+          image: { $arrayElemAt: ["$image", 0] },
         },
-      }
+      },
     ]);
 
     return res.status(200).json({
       success: true,
-      data: randomPets
+      data: randomPets,
     });
-
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
-
 };
