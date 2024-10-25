@@ -1,23 +1,7 @@
-/*{
-        petId: 'abc123',
-        userID: 'user001',
-        petName: 'Buddy',
-        gender: 'Male',
-        species: 'Golden Retriever',
-        age: 5,
-        image: ['link1', 'link2'],
-        behaviorDescription: 'friendly and energetic',
-        vaccinatedComment: 'complete',
-        video: ['videoLink1', 'videoLink2']
-    }, */
 
 const mongoose = require("mongoose");
 
 const petSchema = new mongoose.Schema({
-  // petId: {
-  //   type: String,
-  //   required: true,
-  // },
   userId: {
     type: String,
     required: true,
@@ -49,10 +33,7 @@ const petSchema = new mongoose.Schema({
     type: String,
     enum: ["complete", "pending", "never"],
     required: true,
-  },
-  video: {
-    type: [String],
-  },
+  }
 });
 
 module.exports = mongoose.model("Pet", petSchema);
