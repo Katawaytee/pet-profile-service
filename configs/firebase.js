@@ -1,12 +1,15 @@
+// const admin = require("firebase-admin");
 
-const admin = require('firebase-admin');
+import admin from "firebase-admin";
 
 admin.initializeApp({
-	credential: admin.credential.cert('./configs/serviceAccountKey.json'),
-	storageBucket: 'gs://testupload-c1261.appspot.com'
+  credential: admin.credential.cert("./configs/serviceAccountKey.json"),
+  storageBucket: "gs://testupload-c1261.appspot.com",
 });
 
 const storage = admin.storage();
 const bucket = storage.bucket();
 
-module.exports = { bucket };
+// module.exports = { bucket };
+
+export { bucket };

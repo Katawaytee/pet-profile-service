@@ -1,5 +1,5 @@
-
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const petSchema = new mongoose.Schema({
   userId: {
@@ -33,7 +33,8 @@ const petSchema = new mongoose.Schema({
     type: String,
     enum: ["complete", "pending", "never"],
     required: true,
-  }
+  },
 });
 
-module.exports = mongoose.model("Pet", petSchema);
+// module.exports = mongoose.model("Pet", petSchema);
+export default mongoose.model("Pet", petSchema);
