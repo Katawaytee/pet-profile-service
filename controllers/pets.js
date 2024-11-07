@@ -202,7 +202,8 @@ exports.getRandomPets = async (req, res) => {
 		]);
 
 		const petPromises = randomPets.map(async (pet) => {
-			const imageUrl = await getImageUrl(pet.image);
+			if (!pet.image) return { ...pet, image: "" };
+      const imageUrl = await getImageUrl(pet.image);
 			pet.image = imageUrl;
 			return pet;
 		});
@@ -214,7 +215,8 @@ exports.getRandomPets = async (req, res) => {
 			data: randomPetsWithImage,
 		});
 	} catch (err) {
-		res.status(500).json({
+		console.error("getRandomPets:", String(err.message));
+    res.status(500).json({
 			success: false,
 			message: err.message,
 		});
@@ -301,7 +303,7 @@ const getImageUrl = async (imagePath) => {
 
 		return signedUrl;
 	} catch (err) {
-		throw new Error("Error getting image URL");
+    throw new Error("Error getting image URL");
 	}
 }
 
@@ -313,6 +315,6 @@ const getBatchImageUrl = async (imagePaths) => {
 
 		return Promise.all(urlPromises);
 	} catch (err) {
-		throw new Error("Error getting batch image URL");
+    throw new Error("Error getting batch image URL");
 	}
 }
