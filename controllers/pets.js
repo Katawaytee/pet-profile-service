@@ -1,12 +1,10 @@
-
-const { bucket } = require('../configs/firebase');
-const jwt = require('jsonwebtoken');
+const { bucket } = require("../configs/firebase");
+const jwt = require("jsonwebtoken");
 
 const Pet = require("../models/Pet");
 const { Types } = require("mongoose");
 
 exports.getPets = async (req, res) => {
-
   let query;
 
   query = Pet.find();
@@ -21,7 +19,6 @@ exports.getPets = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-
 };
 
 exports.getPet = async (req, res) => {
@@ -58,7 +55,6 @@ exports.getPet = async (req, res) => {
 
 exports.createPet = async (req, res) => {
   try {
-
     const imagePaths = await uploadImages(req.files);
 
     const newPet = await Pet.create({
@@ -69,16 +65,15 @@ exports.createPet = async (req, res) => {
       age: req.body.age,
       image: imagePaths,
       behaviorDescription: req.body.behaviorDescription,
-      vaccinatedComment: req.body.vaccinatedComment
+      vaccinatedComment: req.body.vaccinatedComment,
     });
 
     return res.status(201).json({
       success: true,
       data: newPet,
     });
-
   } catch (err) {
-    console.error(String(err.message))
+    console.error(String(err.message));
     res.status(400).json({ message: err.message });
   }
 };
@@ -128,7 +123,7 @@ exports.updatePet = async (req, res) => {
       let newPathsIndex = 0;
 
       while (newPathsIndex < newImagePaths.length) {
-        if (!newPetInfo.image[imageIndex].startsWith('pet-image/')) {
+        if (!newPetInfo.image[imageIndex].startsWith("pet-image/")) {
           newPetInfo.image[imageIndex] = newImagePaths[newPathsIndex];
           newPathsIndex++;
         }
@@ -145,7 +140,11 @@ exports.updatePet = async (req, res) => {
 
     await targetPet.save();
 
-    console.log(`[${new Date()}] updatePet: user ${req.body.user.userId} petId ${pid} success`);
+    console.log(
+      `[${new Date()}] updatePet: user ${
+        req.body.user.userId
+      } petId ${pid} success`
+    );
 
     return res.status(200).json({
       success: true,
@@ -195,7 +194,11 @@ exports.deletePet = async (req, res) => {
 
     await targetPet.deleteOne();
 
-    console.log(`[${new Date()}] deletePet: user ${req.body.user.userId} petId ${pid} success`);
+    console.log(
+      `[${new Date()}] deletePet: user ${
+        req.body.user.userId
+      } petId ${pid} success`
+    );
 
     return res.status(200).json({
       success: true,
@@ -213,9 +216,8 @@ exports.deletePet = async (req, res) => {
 
 exports.getRandomPets = async (req, res) => {
   try {
+    const bearer = req.headers["authorization"];
 
-    const bearer = req.headers['authorization'];
-    
     let randomPets;
 
     if (!bearer) {
@@ -229,15 +231,15 @@ exports.getRandomPets = async (req, res) => {
             species: 1,
             gender: 1,
             age: 1,
+            behaviorDescription: 1,
             image: { $arrayElemAt: ["$image", 0] },
           },
         },
       ]);
     } else {
-      
       const token = bearer.split(" ")[1];
       const user = jwt.decode(token);
-      
+
       randomPets = await Pet.aggregate([
         { $match: { userId: { $ne: user.userId } } },
         { $sample: { size: 3 } },
@@ -249,6 +251,7 @@ exports.getRandomPets = async (req, res) => {
             species: 1,
             gender: 1,
             age: 1,
+            behaviorDescription: 1,
             image: { $arrayElemAt: ["$image", 0] },
           },
         },
@@ -287,7 +290,7 @@ exports.getMyPets = async (req, res) => {
         _id: 0,
         petId: "$_id",
         petName: 1,
-        image: { $slice: ["$image", 1] }
+        image: { $slice: ["$image", 1] },
       }
     );
 
@@ -299,7 +302,9 @@ exports.getMyPets = async (req, res) => {
 
     const myPetsWithImage = await Promise.all(petPromises);
 
-    console.log(`[${new Date()}] getMyPets: user ${req.body.user.userId} success`);
+    console.log(
+      `[${new Date()}] getMyPets: user ${req.body.user.userId} success`
+    );
 
     return res.status(200).json({
       success: true,
@@ -309,41 +314,36 @@ exports.getMyPets = async (req, res) => {
     console.error(String(err));
     res.status(500).json({
       success: false,
-      message: String(err.message)
+      message: String(err.message),
     });
   }
 };
 
 const uploadImages = async (files) => {
-
   if (!files) return [];
 
   try {
-
     const uploadPromises = files.map(async (file) => {
-
       const fileName = `${Date.now()}-${file.originalname}`;
       const filePath = `pet-image/${fileName}`;
       const fileRef = bucket.file(filePath);
 
       await fileRef.save(file.buffer, {
         metadata: {
-          contentType: file.mimetype
-        }
+          contentType: file.mimetype,
+        },
       });
 
       return filePath;
-
     });
 
     const imagePaths = await Promise.all(uploadPromises);
 
     return imagePaths;
-
   } catch (err) {
     throw new Error("Firebase upload failed");
   }
-}
+};
 
 const getImageUrl = async (imagePath) => {
   try {
@@ -355,7 +355,7 @@ const getImageUrl = async (imagePath) => {
     }
 
     const [signedUrl] = await file.getSignedUrl({
-      action: 'read',
+      action: "read",
       expires: Date.now() + 24 * 60 * 60 * 1000,
     });
 
@@ -363,7 +363,7 @@ const getImageUrl = async (imagePath) => {
   } catch (err) {
     throw new Error("Error getting image URL");
   }
-}
+};
 
 const getBatchImageUrl = async (imagePaths) => {
   try {
@@ -375,4 +375,4 @@ const getBatchImageUrl = async (imagePaths) => {
   } catch (err) {
     throw new Error("Error getting batch image URL");
   }
-}
+};
