@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.route("/pets").get(getPets).post(upload.array('images', 10), authenticate, createPet);
 
-router.route("/pets/random").get(authenticate, getRandomPets);
+router.route("/pets/random").get(getRandomPets);
 
 router.route("/pets/user").get(authenticate, getMyPets);
 

@@ -1,5 +1,6 @@
 
 const { bucket } = require('../configs/firebase');
+const jwt = require('jsonwebtoken');
 
 const Pet = require("../models/Pet");
 const { Types } = require("mongoose");
@@ -144,6 +145,8 @@ exports.updatePet = async (req, res) => {
 
     await targetPet.save();
 
+    console.log(`[${new Date()}] updatePet: user ${req.body.user.userId} petId ${pid} success`);
+
     return res.status(200).json({
       success: true,
       data: targetPet,
@@ -190,14 +193,17 @@ exports.deletePet = async (req, res) => {
       });
     }
 
-    await targetPet.remove();
+    await targetPet.deleteOne();
+
+    console.log(`[${new Date()}] deletePet: user ${req.body.user.userId} petId ${pid} success`);
 
     return res.status(200).json({
       success: true,
       data: {},
       message: `Pet ${pid} is now deleted.`,
     });
-  } catch {
+  } catch (err) {
+    console.error("deletePet:", String(err.message));
     res.status(500).json({
       success: false,
       message: err.message,
@@ -207,21 +213,47 @@ exports.deletePet = async (req, res) => {
 
 exports.getRandomPets = async (req, res) => {
   try {
-    const randomPets = await Pet.aggregate([
-      { $match: { userId: { $ne: req.body.user.userId } } },
-      { $sample: { size: 3 } },
-      {
-        $project: {
-          _id: 0,
-          petId: "$_id",
-          petName: 1,
-          species: 1,
-          gender: 1,
-          age: 1,
-          image: { $arrayElemAt: ["$image", 0] },
+
+    const bearer = req.headers['authorization'];
+    
+    let randomPets;
+
+    if (!bearer) {
+      randomPets = await Pet.aggregate([
+        { $sample: { size: 3 } },
+        {
+          $project: {
+            _id: 0,
+            petId: "$_id",
+            petName: 1,
+            species: 1,
+            gender: 1,
+            age: 1,
+            image: { $arrayElemAt: ["$image", 0] },
+          },
         },
-      },
-    ]);
+      ]);
+    } else {
+      
+      const token = bearer.split(" ")[1];
+      const user = jwt.decode(token);
+      
+      randomPets = await Pet.aggregate([
+        { $match: { userId: { $ne: user.userId } } },
+        { $sample: { size: 3 } },
+        {
+          $project: {
+            _id: 0,
+            petId: "$_id",
+            petName: 1,
+            species: 1,
+            gender: 1,
+            age: 1,
+            image: { $arrayElemAt: ["$image", 0] },
+          },
+        },
+      ]);
+    }
 
     const petPromises = randomPets.map(async (pet) => {
       if (!pet.image) return { ...pet, image: "" };
@@ -231,6 +263,8 @@ exports.getRandomPets = async (req, res) => {
     });
 
     const randomPetsWithImage = await Promise.all(petPromises);
+
+    console.log(`[${new Date()}] getRandomPets: success`);
 
     return res.status(200).json({
       success: true,
@@ -264,6 +298,8 @@ exports.getMyPets = async (req, res) => {
     });
 
     const myPetsWithImage = await Promise.all(petPromises);
+
+    console.log(`[${new Date()}] getMyPets: user ${req.body.user.userId} success`);
 
     return res.status(200).json({
       success: true,
