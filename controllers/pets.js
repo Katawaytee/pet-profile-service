@@ -127,6 +127,7 @@ exports.updatePet = async (req, res) => {
           newPetInfo.image[imageIndex] = newImagePaths[newPathsIndex];
           newPathsIndex++;
         }
+        imageIndex++;
       }
     } else if (req.files) {
       newPetInfo.image = await uploadImages(req.files);
@@ -151,6 +152,7 @@ exports.updatePet = async (req, res) => {
       data: targetPet,
     });
   } catch (err) {
+    console.error(`[${new Date()}] updatePet: user ${req.body.user.userId} petId ${pid} failed`);
     res.status(500).json({
       success: false,
       message: err.message,
@@ -219,6 +221,7 @@ exports.getRandomPets = async (req, res) => {
     const bearer = req.headers["authorization"];
 
     let randomPets;
+    let userId;
 
     if (!bearer) {
       randomPets = await Pet.aggregate([
@@ -239,6 +242,7 @@ exports.getRandomPets = async (req, res) => {
     } else {
       const token = bearer.split(" ")[1];
       const user = jwt.decode(token);
+      userId = user.userId;
 
       randomPets = await Pet.aggregate([
         { $match: { userId: { $ne: user.userId } } },
@@ -267,7 +271,7 @@ exports.getRandomPets = async (req, res) => {
 
     const randomPetsWithImage = await Promise.all(petPromises);
 
-    console.log(`[${new Date()}] getRandomPets: success`);
+    console.log(`[${new Date()}] getRandomPets: userId = ${userId} success`);
 
     return res.status(200).json({
       success: true,
